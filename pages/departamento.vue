@@ -257,35 +257,39 @@ definePageMeta({ middleware: 'auth' })
     </VCard>
   </VDialog>
 
-  <VDialog v-model="dialogEliminar" max-width="400" persistent>
-    <VCard>
-      <VCardTitle class="text-h6 d-flex justify-space-between align-center">
-        Confirmar eliminación
-        <VBtn icon @click="dialogEliminar = false">
-          <VIcon>tabler-x</VIcon>
-        </VBtn>
-      </VCardTitle>
+  <VDialog v-model="dialogEliminar" persistent max-width="400">
+  <VCard
+    class="pa-8 d-flex flex-column align-center justify-center"
+    style="width:400px"
+  >
+    <!-- Icono X grande -->
+    <VIcon size="48" color="error" class="mb-4">tabler-x</VIcon>
 
-      <VCardText>
-        ¿Seguro que deseas eliminar
-        {{ departamentoAEliminar?.nombre }} – {{ departamentoAEliminar?.pais?.nombre }}?
-      </VCardText>
+    <!-- Mensaje en una sola línea -->
+    <span class="text-error text-h6 text-center text-no-wrap mb-6">
+      ¿Estás seguro de eliminar este elemento?
+    </span>
 
-      <VCardActions class="justify-end">
-        <VBtn color="secondary" variant="outlined" @click="dialogEliminar = false">
-          <VIcon start icon="tabler-x" /> Cancelar
-        </VBtn>
-        <VBtn
-          color="error"
-          variant="elevated"
-          :loading="esperando"
-          @click="eliminarDepartamento"
-        >
-          <VIcon start icon="tabler-trash" /> Eliminar
-        </VBtn>
-      </VCardActions>
-    </VCard>
-  </VDialog>
+    <VCardActions class="justify-end w-100">
+      <VBtn
+        color="secondary"
+        variant="outlined"
+        @click="dialogEliminar = false"
+      >
+        Cancelar
+      </VBtn>
+      <VBtn
+        color="error"
+        variant="elevated"
+        :loading="esperando"
+        @click="eliminarDepartamento"
+      >
+        <VIcon start icon="tabler-trash" /> Eliminar
+      </VBtn>
+    </VCardActions>
+  </VCard>
+</VDialog>
+
 
   <VSnackbar
     v-model="snackbar"
