@@ -94,7 +94,7 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
               v-show="!hideTitleAndIcon"
               class="app-logo-title"
             >
-              Modulos
+              Variedades
             </h1>
           </Transition>
         </NuxtLink>
