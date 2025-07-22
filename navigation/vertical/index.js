@@ -1,6 +1,6 @@
 export default [
   {
-    title: 'Home',
+    title: 'Inicio',
     to: { name: 'second-page' },
     icon: { icon: 'tabler-smart-home' },
   },
@@ -10,12 +10,12 @@ export default [
     icon: { icon: 'tabler-box' },
   },
   {
-  title: 'Catálogos',
-  icon: { icon: 'tabler-folder' },
+  title: 'Configuración',
+  icon: { icon: 'tabler-settings' },
   children: [
     {
       title: 'Departamentos',
-      // to: '/departamentos',
+      to: 'departamento',
     },
     {
       title: 'Municipios',
