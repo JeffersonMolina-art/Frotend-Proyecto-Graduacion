@@ -14,27 +14,39 @@ export const useAuthStore = defineStore('auth', {
       this.user = user
       this.roles = user.roles || []
 
-      // Guardar en cookies
-      useCookie('token').value = token
-      useCookie('user').value = user
-      useCookie('roles').value = this.roles
+      const tokenCookie = useCookie('token')
+      const userCookie = useCookie('user')
+      const rolesCookie = useCookie('roles')
+
+      tokenCookie.value = token
+      userCookie.value = user
+      rolesCookie.value = this.roles
     },
 
     logout() {
       this.token = null
       this.user = null
+      this.roles = []
 
-      // Eliminar cookies
-      useCookie('token').value = null
-      useCookie('user').value = null
+      const tokenCookie = useCookie('token')
+      const userCookie = useCookie('user')
+      const rolesCookie = useCookie('roles')
+
+      tokenCookie.value = null
+      userCookie.value = null
+      rolesCookie.value = null
 
       navigateTo('/login')
     },
 
     cargarDesdeSession() {
-      // Cargar desde cookies
-      this.token = useCookie('token').value
-      this.user = useCookie('user').value
+      const tokenCookie = useCookie('token')
+      const userCookie = useCookie('user')
+      const rolesCookie = useCookie('roles')
+
+      this.token = tokenCookie.value
+      this.user = userCookie.value
+      this.roles = rolesCookie.value || []
     }
   }
 })
