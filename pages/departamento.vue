@@ -1,7 +1,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useEsperar } from '@/composables/useEsperar'
 
+const { esperar, finEspera } = useEsperar()
 const departamentos         = ref([])
 const paises                = ref([])
 const loading               = ref(true)
@@ -167,8 +169,10 @@ watch(
   () => authStore.token,
   async token => {
     if (token) {
+      esperar()
       await cargarPaises()
       await cargarDepartamentos()
+      finEspera()
     }
   },
   { immediate: true },
