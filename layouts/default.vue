@@ -5,6 +5,7 @@ import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
 
 const DefaultLayoutWithHorizontalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithHorizontalNav.vue'))
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithVerticalNav.vue'))
+import Esperar from './components/Esperar.vue'
 const configStore = useConfigStore()
 
 // ℹ️ This will switch to vertical nav when define breakpoint is reached when in horizontal nav layout
@@ -23,6 +24,7 @@ injectSkinClasses()
     :is="configStore.appContentLayoutNav === AppContentLayoutNav.Vertical ? DefaultLayoutWithVerticalNav : DefaultLayoutWithHorizontalNav"
   >
     <slot />
+    <Esperar />
   </Component>
 </template>
 
