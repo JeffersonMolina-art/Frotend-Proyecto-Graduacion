@@ -50,6 +50,10 @@ export default [
           title: 'Municipios',
           to: 'municipio',
         },
+        {
+          title: 'Paises',
+          to: 'pais',
+        },
       ],
     },
   ],
