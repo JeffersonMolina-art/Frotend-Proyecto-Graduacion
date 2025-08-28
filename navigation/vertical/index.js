@@ -26,7 +26,7 @@ export default [
   },
   {
     title: 'Proveedores',
-    // to: { name: 'proveedores' },
+    to: { name: 'proveedor' },
     icon: { icon: 'tabler-users' },
   },
   {
@@ -56,6 +56,38 @@ export default [
         },
       ],
     },
+    {
+      title: 'Categorias',
+      icon: { icon: 'tabler-tag' },
+      to: 'categorias',
+    },
+    {
+      title: 'Configuracion Usuarios',
+      icon: { icon: 'tabler-users' },
+      children: [
+        {
+          title: 'Roles',
+          icon: { icon: 'tabler-user' },
+          to: 'roles'
+        },
+        {
+          title: 'Permisos',
+          icon: { icon: 'tabler-lock' },
+          to: 'permisos'
+        },
+        {
+          title: 'Unidad',
+          icon: { icon: 'tabler-box' },
+          to: 'unidad'
+        },
+        {
+          title: 'Puestos',
+          icon: { icon: 'tabler-briefcase' },
+          to: 'puestos'
+        }
+      ],
+    },
+    
   ],
 }
 ]
