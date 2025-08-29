@@ -1,16 +1,24 @@
 <template>
   <div>
+    <!-- Modal de proveedor -->
     <ProveedorModal
       :mostrar="mostrarModal"
+      :proveedor="proveedorSeleccionado"
+      :editando="editando"
       @cerrar="mostrarModal = false"
-      @guardado="cargarProveedores"
+      @guardado="cerrarModal"
     />
 
+    <!-- Botón para agregar -->
     <v-row justify="end" class="mb-4">
-      <v-btn color="primary" @click="mostrarModal = true">Agregar Proveedor</v-btn>
+      <v-btn color="primary" @click="nuevoProveedor">Agregar Proveedor</v-btn>
     </v-row>
 
-    <ProveedorTabla :proveedores="proveedores" />
+    <!-- Tabla -->
+    <ProveedorTabla
+      :proveedores="proveedores"
+      @editar="editarProveedor"
+    />
   </div>
 </template>
 
@@ -23,9 +31,31 @@ import ProveedorModal from '@/components/proveedor/ProveedorModal.vue'
 
 const proveedores = ref([])
 const mostrarModal = ref(false)
+const editando = ref(false)
+const proveedorSeleccionado = ref(null)
 
 const authStore = useAuthStore()
 const config = useRuntimeConfig()
+
+// Nueva función: abrir modal vacío
+const nuevoProveedor = () => {
+  proveedorSeleccionado.value = null
+  editando.value = false
+  mostrarModal.value = true
+}
+
+// Nueva función: abrir modal con proveedor cargado
+const editarProveedor = (proveedor) => {
+  proveedorSeleccionado.value = proveedor
+  editando.value = true
+  mostrarModal.value = true
+}
+
+// Cerrar y recargar
+const cerrarModal = () => {
+  mostrarModal.value = false
+  cargarProveedores()
+}
 
 const cargarProveedores = async () => {
   try {
@@ -46,4 +76,3 @@ const cargarProveedores = async () => {
 
 onMounted(cargarProveedores)
 </script>
-

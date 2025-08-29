@@ -3,28 +3,40 @@ import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useEsperar } from '@/composables/useEsperar'
 
+// Props: recibe proveedor y si está editando
+const props = defineProps({
+  proveedor: {
+    type: Object,
+    default: () => ({}),
+  },
+  editando: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+// Emits
 const emit = defineEmits(['guardar', 'cerrar'])
 
 const currentStep = ref(0)
-
 const authStore = useAuthStore()
 const config = useRuntimeConfig()
 
-const editando              = ref(false)
-const loading               = ref(true)
-const esperando             = ref(false)
-const snackbar      = ref(false)
-const snackbarMsg   = ref('')
+const esperando = ref(false)
+const snackbar = ref(false)
+const snackbarMsg = ref('')
 const snackbarColor = ref('success')
 
-
+// Formulario reactivo
 const formData = ref({
+  id: null,
   nombre: '',
   telefono: '',
   correo: '',
   direccion: '',
 })
 
+// Pasos del stepper
 const steps = [
   {
     title: 'Datos',
@@ -36,8 +48,23 @@ const steps = [
   },
 ]
 
+// Precarga datos si se está editando
+onMounted(() => {
 
+  console.log(props.editando)
+  console.log(props.proveedor)
+  if (props.editando && props.proveedor) {
+    formData.value = {
+      id: props.proveedor.id ?? null,
+      nombre: props.proveedor.nombre ?? '',
+      telefono: props.proveedor.telefono ?? '',
+      correo: props.proveedor.correo ?? '',
+      direccion: props.proveedor.direccion ?? '',
+    }
+  }
+})
 
+// Función para guardar proveedor
 const guardarProveedor = async () => {
   if (!formData.value.nombre?.trim()) {
     snackbarMsg.value = 'Falta el nombre del proveedor'
@@ -46,12 +73,13 @@ const guardarProveedor = async () => {
     return
   }
 
-  const metodo = editando.value ? 'PUT' : 'POST'
-  const endpoint = editando.value
+  const metodo = props.editando ? 'PUT' : 'POST'
+  const endpoint = props.editando
     ? `/proveedores/${formData.value.id}`
     : '/proveedores'
 
   esperando.value = true
+
   try {
     await useFetch(endpoint, {
       baseURL: config.public.apiBase,
@@ -66,8 +94,7 @@ const guardarProveedor = async () => {
     snackbarMsg.value = `${formData.value.nombre} guardado correctamente`
     snackbarColor.value = 'success'
     snackbar.value = true
-    // mostrarModal.value = false
-    emit('guardado') // notifica al padre para recargar la tabla
+    emit('guardar') // Notifica al padre para cerrar o recargar tabla
   } catch (e) {
     console.error('Error al guardar proveedor', e)
     snackbarMsg.value = 'Error al guardar proveedor'
@@ -77,13 +104,10 @@ const guardarProveedor = async () => {
     esperando.value = false
   }
 }
-
 </script>
 
 <template>
   <VCard>
-  
-
     <!-- Stepper -->
     <VCardText>
       <AppStepper

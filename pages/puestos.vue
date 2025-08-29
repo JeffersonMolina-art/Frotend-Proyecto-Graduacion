@@ -73,7 +73,7 @@ const abrirModalEditar = async m => {
     id: m.id,
     nombre: m.nombre,
     descripcion: m.descripcion ?? '',
-    area_id: m.unidad?.id ?? null,
+    area_id: m.area?.id ?? null,
   }
   editando.value = true
   dialogPuesto.value = true
@@ -259,7 +259,7 @@ definePageMeta({ middleware: 'auth' })
 
   <!-- Eliminar -->
   <VDialog v-model="dialogEliminar" persistent max-width="400">
-    <VCard class="pa-8 d-flex flex-column align-center justify-center" style="width:400px">
+    <VCard class="pa-8 d-flex flex-column align-center justify-center">
       <VIcon size="48" color="error" class="mb-4">tabler-x</VIcon>
       <span class="text-error text-h6 text-center text-no-wrap mb-6">
         ¿Estás seguro de eliminar este puesto?

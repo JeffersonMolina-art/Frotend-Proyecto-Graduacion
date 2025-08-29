@@ -6,7 +6,12 @@
         <VBtn icon @click="cerrarModal"><VIcon>tabler-x</VIcon></VBtn>
       </VCardTitle>
       <v-card-text>
-        <ProveedorFormulario @guardar="guardarProveedor" @cerrar="cerrarModal" />
+        <ProveedorFormulario
+          :proveedor="proveedor"
+          :editando="editando"
+          @guardar="guardarProveedor"
+          @cerrar="cerrarModal"
+        />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -18,8 +23,11 @@ import axios from 'axios'
 import ProveedorFormulario from './ProveedorFormulario.vue'
 
 const props = defineProps({
-  mostrar: Boolean
+  mostrar: Boolean,
+  proveedor: Object,
+  editando: Boolean,
 })
+
 
 const emit = defineEmits(['cerrar', 'guardado'])
 
@@ -36,7 +44,6 @@ function cerrarModal() {
 
 async function guardarProveedor(datos) {
   try {
-    await axios.post('/api/proveedores', datos)
     emit('guardado')
   } catch (error) {
     console.error('Error al guardar proveedor', error)
