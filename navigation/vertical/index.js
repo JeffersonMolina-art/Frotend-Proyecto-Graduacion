@@ -10,6 +10,25 @@ export default [
     icon: { icon: 'tabler-box' },
   },
   {
+    title: 'Productos',
+    icon: {icon: 'tabler-shopping-cart'},
+    children: [
+      {
+        title: 'Ingresar productos',
+        icon: { icon: 'tabler-tag' },
+        to: 'crearProductos',
+      },
+      {
+        title: 'Abestecimiento de productos',
+        icon: {icon: 'tabler-tag'},
+      },
+      {
+        title: 'Historial de Stock',
+        icon: {icon: 'tabler-tag'},
+      },
+    ]
+  },
+  {
     title: 'Ventas',
     // to: { name: 'ventas' },
     icon: { icon: 'tabler-shopping-cart' },
