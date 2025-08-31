@@ -1,6 +1,8 @@
 <script setup>
 import { useAuthStore } from '@/stores/authStore'
 
+import ProductosAlertaStock from '@/components/ProductosAlertaStock.vue'
+
 const personaNombre = ref('')
 const authStore = useAuthStore()
 
@@ -38,5 +40,8 @@ definePageMeta({
         Es un placer volver a verte.
       </VCardText>
     </VCard>
+
+    <!-- Enviar los roles del usuario como prop -->
+    <ProductosAlertaStock :roles="authStore.user?.roles || []" />
   </div>
 </template>

@@ -159,36 +159,9 @@ const guardarProducto = async () => {
     snackbar.value = true
 
     emit('guardado', data.value)
+   
+    navigateTo('/inventario')
 
-
-    formData.value = {
-      id: null,
-      nombre: '',
-      descripcion: '',
-      categoria_id: null,
-      precio_unitario: null,
-      unidad_id: null,
-      unidad_medida: '',
-      codigo_barras: '',
-      proveedor_id: null,
-      cantidad_comprada: null,
-      stock_inicial: null,
-      sugerencias: {},
-      stock_actual: null,
-      stock_minimo: null,
-      stock_maximo: null,
-    }
-
-    // ✅ Ir al paso inicial
-    currentStep.value = 0
-
-    // ✅ Resetear validaciones
-    stepValid.value = {
-      0: true,
-      1: true,
-      2: true,
-      3: true,
-    }
   } catch (err) {
     console.error('❌ Error al guardar producto:', err)
     snackbarMsg.value = 'Error al guardar producto'
