@@ -34,11 +34,6 @@ export default [
     icon: { icon: 'tabler-shopping-cart' },
   },
   {
-    title: 'Compras',
-    // to: { name: 'compras' },
-    icon: { icon: 'tabler-shopping-cart' },
-  },
-  {
     title: 'Clientes',
     // to: { name: 'clientes' },
     icon: { icon: 'tabler-users' },
