@@ -126,35 +126,71 @@ const irAlSiguientePaso = async () => {
 }
 
 // ---- Guardar ----
-async function guardarProducto() {
-  if (!puedeGuardar.value) {
-    snackbarMsg.value = 'Revisa los datos: faltan campos obligatorios.'
-    snackbarColor.value = 'error'
-    snackbar.value = true
-    return
-  }
-
-  const metodo = props.editando ? 'PUT' : 'POST'
-  const endpoint = props.editando ? `/productos/${formData.value.id}` : '/productos'
-
+const guardarProducto = async () => {
   esperando.value = true
+
   try {
-    await useFetch(endpoint, {
+    console.log('Guardando producto con datos:', formData.value)
+
+    const payload = {
+      ...formData.value,
+      stock_minimo: formData.value.sugerencias?.stock_minimo ?? 0,
+      stock_maximo: formData.value.sugerencias?.stock_maximo ?? 0,
+      stock_inicial: formData.value.stock_actual,
+      precio_venta: (parseFloat(formData.value.precio_unitario) * 1.45).toFixed(2),
+      dias_esperado: formData.value.dias_llegada,
+      demanda: formData.value.dias_venta,
+    }
+
+    const { data, error } = await useFetch('/productos/configuracion', {
       baseURL: config.public.apiBase,
-      method: metodo,
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${authStore.token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData.value),
+      body: JSON.stringify(payload),
     })
 
-    snackbarMsg.value = `${formData.value.nombre} guardado correctamente`
+    if (error.value) throw error.value
+
+    snackbarMsg.value = 'Producto creado correctamente'
     snackbarColor.value = 'success'
     snackbar.value = true
-    emit('guardado')
-  } catch (e) {
-    console.error('Error al guardar producto', e)
+
+    emit('guardado', data.value)
+
+
+    formData.value = {
+      id: null,
+      nombre: '',
+      descripcion: '',
+      categoria_id: null,
+      precio_unitario: null,
+      unidad_id: null,
+      unidad_medida: '',
+      codigo_barras: '',
+      proveedor_id: null,
+      cantidad_comprada: null,
+      stock_inicial: null,
+      sugerencias: {},
+      stock_actual: null,
+      stock_minimo: null,
+      stock_maximo: null,
+    }
+
+    // ✅ Ir al paso inicial
+    currentStep.value = 0
+
+    // ✅ Resetear validaciones
+    stepValid.value = {
+      0: true,
+      1: true,
+      2: true,
+      3: true,
+    }
+  } catch (err) {
+    console.error('❌ Error al guardar producto:', err)
     snackbarMsg.value = 'Error al guardar producto'
     snackbarColor.value = 'error'
     snackbar.value = true
