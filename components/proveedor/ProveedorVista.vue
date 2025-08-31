@@ -74,17 +74,6 @@ const isEditarProveedorDialogVisible = ref(false)
 
           </VList>
         </VCardText>
-
-        <!-- Botón de Editar -->
-        <VCardText class="d-flex justify-center">
-          <VBtn
-            color="primary"
-            variant="elevated"
-            @click="isEditarProveedorDialogVisible = true"
-          >
-            Editar
-          </VBtn>
-        </VCardText>
       </VCard>
     </VCol>
   </VRow>
