@@ -74,7 +74,7 @@ const cargarAlertas = async () => {
 }
 
 const irAReabastecer = () => {
-  router.push('/productos/reabastecer')
+  navigateTo('/abastecimiento')
 }
 
 onMounted(() => {

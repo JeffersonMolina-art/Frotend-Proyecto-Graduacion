@@ -21,6 +21,7 @@ export default [
       {
         title: 'Abestecimiento de productos',
         icon: {icon: 'tabler-tag'},
+        to: 'abastecimiento',
       },
       {
         title: 'Historial de Stock',
