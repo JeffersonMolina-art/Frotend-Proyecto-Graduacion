@@ -41,8 +41,9 @@ export default [
     roles: ['Super Administrador', 'Admin', 'Gerente', 'Colaborador'],
   },
   {
-    title: 'Clientes',
+    title: 'Personas',
     icon: { icon: 'tabler-users' },
+    to: 'clientes',
     roles: ['Super Administrador', 'Admin', 'Gerente', 'Colaborador'],
   },
   {
