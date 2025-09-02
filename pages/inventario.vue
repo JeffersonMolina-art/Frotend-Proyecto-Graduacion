@@ -68,6 +68,11 @@ const abrirModalCrear = () => {
    navigateTo('/crearProductos')
 }
 
+const esColaborador = computed(() => {
+  const rolesUsuario = authStore.user?.roles || []
+  return rolesUsuario.includes('Colaborador')
+})
+
 const abrirModalEditar = async (producto) => {
   if (!categorias.value.length) {
     await cargarCategorias()
@@ -173,7 +178,7 @@ definePageMeta({ middleware: 'auth' })
   <VCard>
     <VCardTitle class="d-flex justify-space-between align-center">
       <span>Inventario de Productos</span>
-      <VBtn color="primary" @click="abrirModalCrear">Agregar Producto</VBtn>
+      <VBtn color="primary" @click="abrirModalCrear"  v-if="!esColaborador">Agregar Producto</VBtn>
     </VCardTitle>
 
     <!-- Filtros -->
@@ -208,10 +213,10 @@ definePageMeta({ middleware: 'auth' })
       class="pa-4"
     >
       <template #item.acciones="{ item }">
-        <VBtn icon variant="text" color="primary" @click="abrirModalEditar(item)">
+        <VBtn icon variant="text" color="primary" @click="abrirModalEditar(item)"  v-if="!esColaborador">
           <VIcon>tabler-edit</VIcon>
         </VBtn>
-        <VBtn icon variant="text" color="error" @click="confirmarEliminar(item)">
+        <VBtn icon variant="text" color="error" @click="confirmarEliminar(item)"  v-if="!esColaborador">
           <VIcon>tabler-trash</VIcon>
         </VBtn>
       </template>
