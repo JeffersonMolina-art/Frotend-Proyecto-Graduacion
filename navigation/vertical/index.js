@@ -26,7 +26,7 @@ export default [
         title: 'Abestecimiento de productos',
         icon: { icon: 'tabler-tag' },
         to: 'abastecimiento',
-        roles: ['Super Administrador', 'Admin'],
+        roles: ['Super Administrador', 'Admin', 'Gerente'],
       },
       {
         title: 'Historial de Stock',
