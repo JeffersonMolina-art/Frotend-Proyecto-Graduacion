@@ -10,6 +10,12 @@ import {
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
 
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
+// tu backend manda roles como string ["Admin"]
+const userRoles = computed(() => authStore.user?.roles || [])
+
 const props = defineProps({
   tag: {
     type: null,
@@ -55,6 +61,35 @@ watch(() => route.name, () => {
   props.toggleIsOverlayNavActive(false)
 })
 
+function filterMenu(items, rolesUsuario) {
+  return items
+    .map(item => {
+      const newItem = { ...item }
+
+      if (item.children) {
+        newItem.children = filterMenu(item.children, rolesUsuario)
+      }
+
+      const hasAccess =
+        !item.roles || item.roles.some(r => rolesUsuario.includes(r))
+
+      if (hasAccess || (newItem.children && newItem.children.length > 0)) {
+        return newItem
+      }
+
+      return null
+    })
+    .filter(Boolean)
+}
+
+const filteredNavItems = computed(() => filterMenu(props.navItems, userRoles.value))
+
+onMounted(() => {
+  console.log("👉 navItems iniciales:", props.navItems)
+  console.log("👉 userRoles:", userRoles.value)
+  console.log("👉 navItems filtrados:", filteredNavItems.value)
+})
+
 const isVerticalNavScrolled = ref(false)
 const updateIsVerticalNavScrolled = val => isVerticalNavScrolled.value = val
 
@@ -94,12 +129,11 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
               v-show="!hideTitleAndIcon"
               class="app-logo-title"
             >
-              Modulos
+              Variedades
             </h1>
           </Transition>
         </NuxtLink>
         <!-- 👉 Vertical nav actions -->
-        <!-- Show toggle collapsible in >md and close button in <md -->
         <div class="header-action">
           <Component
             :is="layoutConfig.app.iconRenderer || 'div'"
@@ -142,7 +176,7 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
       >
         <Component
           :is="resolveNavItemComponent(item)"
-          v-for="(item, index) in navItems"
+          v-for="(item, index) in filteredNavItems"
           :key="index"
           :item="item"
         />
@@ -172,7 +206,6 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
 @use "@configured-variables" as variables;
 @use "@layouts/styles/mixins";
 
-// 👉 Vertical Nav
 .layout-vertical-nav {
   position: fixed;
   z-index: variables.$layout-vertical-nav-z-index;
@@ -209,12 +242,6 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
 
   .nav-items {
     block-size: 100%;
-
-    // ℹ️ We no loner needs this overflow styles as perfect scrollbar applies it
-    // overflow-x: hidden;
-
-    // // ℹ️ We used `overflow-y` instead of `overflow` to mitigate overflow x. Revert back if any issue found.
-    // overflow-y: auto;
   }
 
   .nav-item-title {
@@ -224,7 +251,6 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
     white-space: nowrap;
   }
 
-  // 👉 Collapsed
   .layout-vertical-nav-collapsed & {
     &:not(.hovered) {
       inline-size: variables.$layout-vertical-nav-collapsed-width;
@@ -232,7 +258,6 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
   }
 }
 
-// Small screen vertical nav transition
 @media (max-width: 1279px) {
   .layout-vertical-nav {
     &:not(.visible) {
