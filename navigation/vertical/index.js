@@ -31,6 +31,7 @@ export default [
       {
         title: 'Historial de Stock',
         icon: { icon: 'tabler-tag' },
+        to: 'historico',
         roles: ['Super Administrador', 'Admin', 'Gerente'],
       },
     ],
