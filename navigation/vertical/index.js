@@ -38,6 +38,7 @@ export default [
   {
     title: 'Ventas',
     icon: { icon: 'tabler-shopping-cart' },
+    to: 'venta',
     roles: ['Super Administrador', 'Admin', 'Gerente', 'Colaborador'],
   },
   {
