@@ -5,89 +5,92 @@ import { useEsperar } from '@/composables/useEsperar'
 
 const { esperar, finEspera } = useEsperar()
 
-const municipios            = ref([])
-const departamentos         = ref([])
-const loading               = ref(true)
-const esperando             = ref(false)
+const puestos            = ref([])
+const unidades           = ref([]) // Áreas
+const loading            = ref(true)
+const esperando          = ref(false)
 
-const authStore             = useAuthStore()
-const config                = useRuntimeConfig()
+const authStore          = useAuthStore()
+const config             = useRuntimeConfig()
 
-const dialogMunicipio       = ref(false)
-const dialogEliminar        = ref(false)
-const municipioAEliminar    = ref(null)
-const editando              = ref(false)
+const dialogPuesto       = ref(false)
+const dialogEliminar     = ref(false)
+const puestoAEliminar    = ref(null)
+const editando           = ref(false)
 
-const snackbar      = ref(false)
-const snackbarMsg   = ref('')
-const snackbarColor = ref('success')
+const snackbar           = ref(false)
+const snackbarMsg        = ref('')
+const snackbarColor      = ref('success')
 
-const municipioFormulario = ref({})
+const puestoFormulario   = ref({})
 
 const headers = [
   { title: 'ID',        value: 'id' },
+  { title: 'Área',      value: 'unidad' },
   { title: 'Nombre',    value: 'nombre' },
-  { title: 'Departamento', value: 'departamento' },
+  { title: 'Descripción', value: 'descripcion' },
   { title: 'Acciones',  value: 'acciones', sortable: false },
 ]
 
-const cargarDepartamentos = async () => {
+const cargarUnidades = async () => {
   try {
-    const { data } = await useFetch('/departamentosDireccion', {
+    const { data } = await useFetch('/unidad', {
       baseURL: config.public.apiBase,
       headers: { Authorization: `Bearer ${authStore.token}` },
     })
-    if (data.value) departamentos.value = data.value
+    if (data.value) unidades.value = data.value
   } catch (e) {
-    console.error('Error al cargar departamentos', e)
+    console.error('Error al cargar unidades (áreas)', e)
   }
 }
 
-const cargarMunicipios = async () => {
+const cargarPuestos = async () => {
   loading.value = true
   try {
-    const { data } = await useFetch('/municipio', {
+    const { data } = await useFetch('/puestos', {
       baseURL: config.public.apiBase,
       headers: { Authorization: `Bearer ${authStore.token}` },
     })
-    if (data.value) municipios.value = data.value
+    console.log(data.value)
+    if (data.value) puestos.value = data.value
   } catch (e) {
-    console.error('Error al cargar municipios', e)
+    console.error('Error al cargar puestos', e)
   } finally {
     loading.value = false
   }
 }
 
 const abrirModalCrear = async () => {
-  if (!departamentos.value.length) await cargarDepartamentos()
-  municipioFormulario.value = { nombre: '', departamento_id: null }
+  if (!unidades.value.length) await cargarUnidades()
+  puestoFormulario.value = { nombre: '', descripcion: '', area_id: null }
   editando.value = false
-  dialogMunicipio.value = true
+  dialogPuesto.value = true
 }
 
 const abrirModalEditar = async m => {
-  if (!departamentos.value.length) await cargarDepartamentos()
-  municipioFormulario.value = {
+  if (!unidades.value.length) await cargarUnidades()
+  puestoFormulario.value = {
     id: m.id,
     nombre: m.nombre,
-    departamento_id: m.departamento?.id ?? null,
+    descripcion: m.descripcion ?? '',
+    area_id: m.area?.id ?? null,
   }
   editando.value = true
-  dialogMunicipio.value = true
+  dialogPuesto.value = true
 }
 
-const nombreDeptoPorId = id =>
-  departamentos.value.find(d => d.id === id)?.nombre ?? ''
+const nombreUnidadPorId = id =>
+  unidades.value.find(u => u.id === id)?.nombre ?? ''
 
 const validarFormulario = () => {
-  if (!municipioFormulario.value.nombre?.trim()) {
-    snackbarMsg.value = 'Falta el nombre del municipio'
+  if (!puestoFormulario.value.area_id) {
+    snackbarMsg.value = 'Falta seleccionar el área'
     snackbarColor.value = 'error'
     snackbar.value = true
     return false
   }
-  if (!municipioFormulario.value.departamento_id) {
-    snackbarMsg.value = 'Falta seleccionar el departamento'
+  if (!puestoFormulario.value.nombre?.trim()) {
+    snackbarMsg.value = 'Falta el nombre del puesto'
     snackbarColor.value = 'error'
     snackbar.value = true
     return false
@@ -95,13 +98,13 @@ const validarFormulario = () => {
   return true
 }
 
-const guardarMunicipio = async () => {
+const guardarPuesto = async () => {
   if (!validarFormulario()) return
 
-  const metodo   = editando.value ? 'PUT' : 'POST'
+  const metodo = editando.value ? 'PUT' : 'POST'
   const endpoint = editando.value
-    ? `/municipio/${municipioFormulario.value.id}`
-    : '/municipio'
+    ? `/puestos/${puestoFormulario.value.id}`
+    : '/puestos'
 
   esperando.value = true
   try {
@@ -112,19 +115,18 @@ const guardarMunicipio = async () => {
         Authorization: `Bearer ${authStore.token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(municipioFormulario.value),
+      body: JSON.stringify(puestoFormulario.value),
     })
 
     snackbarMsg.value =
-      `${municipioFormulario.value.nombre} – ` +
-      `${nombreDeptoPorId(municipioFormulario.value.departamento_id)}`
+      `${puestoFormulario.value.nombre} – ${nombreUnidadPorId(puestoFormulario.value.area_id)}`
     snackbarColor.value = 'success'
     snackbar.value = true
-    dialogMunicipio.value = false
-    await cargarMunicipios()
+    dialogPuesto.value = false
+    await cargarPuestos()
   } catch (e) {
-    console.error('Error al guardar municipio', e)
-    snackbarMsg.value = 'Error al guardar municipio'
+    console.error('Error al guardar puesto', e)
+    snackbarMsg.value = 'Error al guardar puesto'
     snackbarColor.value = 'error'
     snackbar.value = true
   } finally {
@@ -133,14 +135,14 @@ const guardarMunicipio = async () => {
 }
 
 const confirmarEliminar = m => {
-  municipioAEliminar.value = m
+  puestoAEliminar.value = m
   dialogEliminar.value = true
 }
 
-const eliminarMunicipio = async () => {
+const eliminarPuesto = async () => {
   esperando.value = true
   try {
-    await useFetch(`/municipio/${municipioAEliminar.value.id}`, {
+    await useFetch(`/puestos/${puestoAEliminar.value.id}`, {
       baseURL: config.public.apiBase,
       method: 'DELETE',
       headers: {
@@ -150,15 +152,14 @@ const eliminarMunicipio = async () => {
     })
 
     snackbarMsg.value =
-      `${municipioAEliminar.value.nombre} – ` +
-      `${municipioAEliminar.value.departamento?.nombre ?? ''}`
+      `${puestoAEliminar.value.nombre} – ${puestoAEliminar.value.unidad?.nombre ?? ''}`
     snackbarColor.value = 'success'
     snackbar.value = true
     dialogEliminar.value = false
-    await cargarMunicipios()
+    await cargarPuestos()
   } catch (e) {
-    console.error('Error al eliminar municipio', e)
-    snackbarMsg.value = 'Error al eliminar municipio'
+    console.error('Error al eliminar puesto', e)
+    snackbarMsg.value = 'Error al eliminar puesto'
     snackbarColor.value = 'error'
     snackbar.value = true
   } finally {
@@ -171,12 +172,12 @@ watch(
   async token => {
     if (token) {
       esperar()
-      await cargarDepartamentos()
-      await cargarMunicipios()
+      await cargarUnidades()
+      await cargarPuestos()
       finEspera()
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 definePageMeta({ middleware: 'auth' })
@@ -187,20 +188,20 @@ definePageMeta({ middleware: 'auth' })
     <VProgressLinear v-if="esperando" indeterminate height="3" color="primary" />
 
     <VCardTitle class="d-flex justify-space-between align-center">
-      <span>Municipios</span>
-      <VBtn color="primary" @click="abrirModalCrear">Agregar Municipio</VBtn>
+      <span>Puestos</span>
+      <VBtn color="primary" @click="abrirModalCrear">Agregar Puesto</VBtn>
     </VCardTitle>
 
     <VDataTable
       :headers="headers"
-      :items="municipios"
+      :items="puestos"
       :loading="loading"
-      loading-text="Cargando municipios…"
+      loading-text="Cargando puestos…"
       items-per-page="10"
       class="pa-4"
     >
-      <template #item.departamento="{ item }">
-        {{ item.departamento?.nombre }}
+      <template #item.unidad="{ item }">
+        {{ item.area?.nombre }}
       </template>
 
       <template #item.acciones="{ item }">
@@ -215,37 +216,41 @@ definePageMeta({ middleware: 'auth' })
   </VCard>
 
   <!-- Crear / Editar -->
-  <VDialog v-model="dialogMunicipio" max-width="500" persistent>
+  <VDialog v-model="dialogPuesto" max-width="600" persistent>
     <VCard>
       <VCardTitle class="d-flex justify-space-between align-center">
-        <span class="text-h6">{{ editando ? 'Editar' : 'Agregar' }} Municipio</span>
-        <VBtn icon @click="dialogMunicipio = false"><VIcon>tabler-x</VIcon></VBtn>
+        <span class="text-h6">{{ editando ? 'Editar' : 'Agregar' }} Puesto</span>
+        <VBtn icon @click="dialogPuesto = false"><VIcon>tabler-x</VIcon></VBtn>
       </VCardTitle>
 
       <VCardText>
         <VRow dense>
-          <VCol cols="6">
-            <VTextField v-model="municipioFormulario.nombre" label="Nombre" required />
-          </VCol>
-          <VCol cols="6">
+          <VCol cols="12">
             <VSelect
-              v-model="municipioFormulario.departamento_id"
-              :items="departamentos"
+              v-model="puestoFormulario.area_id"
+              :items="unidades"
               item-title="nombre"
               item-value="id"
-              label="Departamento"
-              placeholder="Selecciona un departamento"
+              label="Área"
+              placeholder="Selecciona un área"
               required
             />
+          </VCol>
+
+          <VCol cols="6">
+            <VTextField v-model="puestoFormulario.nombre" label="Nombre" required />
+          </VCol>
+          <VCol cols="6">
+            <VTextField v-model="puestoFormulario.descripcion" label="Descripción" />
           </VCol>
         </VRow>
       </VCardText>
 
       <VCardActions class="justify-end">
-        <VBtn color="error" variant="outlined" @click="dialogMunicipio = false">
+        <VBtn color="error" variant="outlined" @click="dialogPuesto = false">
           <VIcon start icon="tabler-x" /> Cancelar
         </VBtn>
-        <VBtn color="primary" variant="elevated" :loading="esperando" @click="guardarMunicipio">
+        <VBtn color="primary" variant="elevated" :loading="esperando" @click="guardarPuesto">
           <VIcon start icon="tabler-check" /> Guardar
         </VBtn>
       </VCardActions>
@@ -257,13 +262,13 @@ definePageMeta({ middleware: 'auth' })
     <VCard class="pa-8 d-flex flex-column align-center justify-center">
       <VIcon size="48" color="error" class="mb-4">tabler-x</VIcon>
       <span class="text-error text-h6 text-center text-no-wrap mb-6">
-        ¿Estás seguro de eliminar este elemento?
+        ¿Estás seguro de eliminar este puesto?
       </span>
       <VCardActions class="justify-end w-100">
         <VBtn color="secondary" variant="outlined" @click="dialogEliminar = false">
           Cancelar
         </VBtn>
-        <VBtn color="error" variant="elevated" :loading="esperando" @click="eliminarMunicipio">
+        <VBtn color="error" variant="elevated" :loading="esperando" @click="eliminarPuesto">
           <VIcon start icon="tabler-trash" /> Eliminar
         </VBtn>
       </VCardActions>

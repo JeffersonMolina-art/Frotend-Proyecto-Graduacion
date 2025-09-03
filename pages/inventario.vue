@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const productos = ref([])
@@ -18,6 +18,9 @@ const snackbarColor = ref('success')
 
 const productoFormulario = ref({})
 const categorias = ref([])
+
+const filtroNombre = ref('')
+const filtroCategoria = ref(null)
 
 const headers = [
   { title: 'Nombre', value: 'nombre' },
@@ -62,21 +65,15 @@ const cargarCategorias = async () => {
 }
 
 const abrirModalCrear = () => {
-  productoFormulario.value = {
-    nombre: '',
-    descripcion: '',
-    codigo_barra: '',
-    unidad_medida: '',
-    precio_unitario: null,
-    stock_actual: null,
-    categoria_id: null,
-  }
-  editando.value = false
-  dialogProducto.value = true
+   navigateTo('/crearProductos')
 }
 
+const esColaborador = computed(() => {
+  const rolesUsuario = authStore.user?.roles || []
+  return rolesUsuario.includes('Colaborador')
+})
+
 const abrirModalEditar = async (producto) => {
-  // Si aún no se han cargado las categorías, las cargamos
   if (!categorias.value.length) {
     await cargarCategorias()
   }
@@ -97,7 +94,6 @@ const guardarProducto = async () => {
 
   const body = { ...productoFormulario.value }
 
-  // Extraer solo el ID de la categoría si es un objeto
   if (body.categoria_id && typeof body.categoria_id === 'object') {
     body.categoria_id = body.categoria_id.id
   }
@@ -156,7 +152,14 @@ const eliminarProducto = async () => {
   }
 }
 
-// Esperar el token antes de cargar data
+const productosFiltrados = computed(() => {
+  return productos.value.filter(p => {
+    const coincideNombre = p.nombre?.toLowerCase().includes(filtroNombre.value.toLowerCase())
+    const coincideCategoria = !filtroCategoria.value || p.categoria_id === filtroCategoria.value
+    return coincideNombre && coincideCategoria
+  })
+})
+
 watch(
   () => authStore.token,
   async (token) => {
@@ -175,22 +178,45 @@ definePageMeta({ middleware: 'auth' })
   <VCard>
     <VCardTitle class="d-flex justify-space-between align-center">
       <span>Inventario de Productos</span>
-      <VBtn color="primary" @click="abrirModalCrear">Agregar Producto</VBtn>
+      <VBtn color="primary" @click="abrirModalCrear"  v-if="!esColaborador">Agregar Producto</VBtn>
     </VCardTitle>
+
+    <!-- Filtros -->
+    <VCardText class="d-flex flex-wrap gap-4">
+      <VTextField
+        v-model="filtroNombre"
+        label="Buscar por nombre"
+        density="compact"
+        hide-details
+        clearable
+        class="flex-grow-1"
+      />
+      <VSelect
+        v-model="filtroCategoria"
+        :items="categorias"
+        item-title="nombre"
+        item-value="id"
+        label="Filtrar por categoría"
+        density="compact"
+        hide-details
+        clearable
+        class="flex-grow-1"
+      />
+    </VCardText>
 
     <VDataTable
       :headers="headers"
-      :items="productos"
+      :items="productosFiltrados"
       :loading="loading"
       loading-text="Cargando productos..."
       items-per-page="10"
       class="pa-4"
     >
       <template #item.acciones="{ item }">
-        <VBtn icon variant="text" color="primary" @click="abrirModalEditar(item)">
+        <VBtn icon variant="text" color="primary" @click="abrirModalEditar(item)"  v-if="!esColaborador">
           <VIcon>tabler-edit</VIcon>
         </VBtn>
-        <VBtn icon variant="text" color="error" @click="confirmarEliminar(item)">
+        <VBtn icon variant="text" color="error" @click="confirmarEliminar(item)"  v-if="!esColaborador">
           <VIcon>tabler-trash</VIcon>
         </VBtn>
       </template>
@@ -239,7 +265,6 @@ definePageMeta({ middleware: 'auth' })
               required
             />
           </VCol>
-
         </VRow>
       </VCardText>
 

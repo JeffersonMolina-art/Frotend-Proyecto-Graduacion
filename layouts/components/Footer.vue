@@ -4,7 +4,7 @@
     <span class="d-flex align-center text-medium-emphasis">
       &copy;
       {{ new Date().getFullYear() }}
-      Jefferson Molina
+      Variedades del cid
     </span>
   </div>
 </template>
