@@ -55,6 +55,7 @@ export default [
   {
     title: 'Usuarios',
     icon: { icon: 'tabler-user' },
+    to: 'usuarios',
     roles: ['Super Administrador', 'Admin'],
   },
   {
