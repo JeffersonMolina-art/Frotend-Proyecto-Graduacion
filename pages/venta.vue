@@ -133,6 +133,13 @@ onMounted(cargarProductos)
 // Agregar producto
 const agregarProducto = (producto) => {
   if (!producto) return
+
+  if (producto.stock_actual <= 1) {
+    mostrarSnackbar(`Stock insuficiente para "${producto.nombre}"`, 'error')
+    productoSeleccionado.value = null 
+    return
+  }
+
   const existe = productosSeleccionados.value.find(p => p.id === producto.id)
   if (!existe) {
     productosSeleccionados.value.push({ ...producto, cantidad: 1 })
