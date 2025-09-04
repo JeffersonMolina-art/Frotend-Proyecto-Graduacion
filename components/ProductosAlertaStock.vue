@@ -18,7 +18,7 @@ const loading = ref(false)
 const router = useRouter()
 const { esperar, finEspera } = useEsperar()
 
-const rolesPermitidos = ['Admin', 'gerente', 'superadministrador']
+const rolesPermitidos = ['Admin', 'Gerente', 'Super Administrador']
 
 const puedeVerAlertas = computed(() => {
   return props.roles.some(rol => rolesPermitidos.includes(rol))
