@@ -153,9 +153,12 @@ const eliminarProducto = async () => {
 }
 
 const productosFiltrados = computed(() => {
+  const nombreFiltro = (filtroNombre.value || '').toLowerCase()
+  const categoriaFiltro = filtroCategoria.value
+
   return productos.value.filter(p => {
-    const coincideNombre = p.nombre?.toLowerCase().includes(filtroNombre.value.toLowerCase())
-    const coincideCategoria = !filtroCategoria.value || p.categoria_id === filtroCategoria.value
+    const coincideNombre = (p.nombre || '').toLowerCase().includes(nombreFiltro)
+    const coincideCategoria = !categoriaFiltro || p.categoria_id === categoriaFiltro
     return coincideNombre && coincideCategoria
   })
 })
