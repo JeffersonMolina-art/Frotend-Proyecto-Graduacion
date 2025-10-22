@@ -1,5 +1,5 @@
 <script setup>
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+// import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
@@ -7,8 +7,8 @@ import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustratio
 import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+// import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+// import { themeConfig } from '@themeConfig'
 import { useAuthStore } from '@/stores/authStore'
 const authStore = useAuthStore()
 
@@ -160,7 +160,7 @@ const handleLogin = async () => {
                   Iniciar sesión
                 </VBtn>
                 <p v-if="error" class="text-error mt-2 text-center">
-                  {{ error }}
+                  Credenciales inválidas
                 </p>
 
               </VCol>

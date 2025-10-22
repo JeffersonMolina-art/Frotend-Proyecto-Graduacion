@@ -9,7 +9,9 @@
     "lint": "eslint . -c .eslintrc.cjs --fix --ext .ts,.js,.cjs,.vue,.tsx,.jsx",
     "build:icons": "tsx plugins/iconify/build-icons.js",
     "postinstall": "nuxt prepare && npm run build:icons ",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "test:unit": "vitest run",
+    "test:unit:ui": "vitest --ui"
   },
   "dependencies": {
     "@casl/ability": "6.7.2",
@@ -80,6 +82,8 @@
     "@tiptap/extension-superscript": "^2.10.3",
     "@tiptap/extension-underline": "^2.10.3",
     "@videojs-player/vue": "1.0.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/test-utils": "^2.4.6",
     "@vueuse/nuxt": "12.0.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
@@ -91,6 +95,8 @@
     "eslint-plugin-sonarjs": "0.24.0",
     "eslint-plugin-unicorn": "51.0.1",
     "eslint-plugin-vue": "9.32.0",
+    "happy-dom": "^20.0.8",
+    "jsdom": "^27.0.1",
     "postcss-html": "1.7.0",
     "postcss-scss": "4.0.9",
     "sass": "1.76.0",
@@ -104,6 +110,7 @@
     "vite": "5.4.11",
     "vite-plugin-vuetify": "2.0.3",
     "vite-svg-loader": "5.1.0",
+    "vitest": "^3.2.4",
     "vue-shepherd": "3.0.0"
   },
   "resolutions": {
