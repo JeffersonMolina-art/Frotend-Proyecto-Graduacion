@@ -110,4 +110,6 @@ config.global.stubs = {
   AppStepper: { template: '<div><slot /></div>' },
   VCardTitle: { template: '<div><slot /></div>' },
   VCardActions: { template: '<div><slot /></div>' },
+  VAutocomplete: { template: '<input />' },
+  VSnackbar: { template: '<div><slot /></div>' },
 }
