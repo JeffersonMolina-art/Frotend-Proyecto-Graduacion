@@ -29,7 +29,6 @@ global.useFetch = vi.fn(async () => ({
   data: { value: null },
   error: { value: null },
 }))
-
 global.useRuntimeConfig = vi.fn(() => ({
   public: { apiBase: 'http://localhost:3000/api' },
 }))
@@ -38,15 +37,12 @@ vi.mock('.*\\.(png|jpg|jpeg|svg|gif|webp)$', () => ({
   default: 'mock-image.png',
 }))
 vi.mock('.*\\.(css|scss|sass)$', () => ({}))
-
 vi.mock('@core/composable/useGenerateImageVariant', () => ({
   useGenerateImageVariant: vi.fn(() => 'mocked-image'),
 }))
-
 vi.mock('@layouts/components/VNodeRenderer', () => ({
   VNodeRenderer: {},
 }))
-
 vi.mock('#app', () => ({
   useCookie: vi.fn(() => ({
     value: '',
@@ -69,3 +65,49 @@ config.global.stubs = {
   AppTextField: { template: '<input />' },
 }
 
+global.useFetch = vi.fn(async (url, options) => {
+  if (url.includes('/personas') && (!options || options.method === 'GET')) {
+    return {
+      data: { value: [{ id: 1, primer_nombre: 'Ana', primer_apellido: 'López' }] },
+      error: { value: null },
+    }
+  }
+  if (url.includes('/departamentosDireccion')) {
+    return {
+      data: { value: [{ id: 1, nombre: 'Guatemala' }] },
+      error: { value: null },
+    }
+  }
+  if (url.includes('/municipio')) {
+    return {
+      data: { value: [{ id: 1, nombre: 'Mixco', departamento_id: 1 }] },
+      error: { value: null },
+    }
+  }
+  if (url.includes('/personas') && options?.method === 'POST') {
+    return { data: { value: { id: 2 } }, error: { value: null } }
+  }
+  if (url.includes('/personas') && options?.method === 'DELETE') {
+    return { data: { value: true }, error: { value: null } }
+  }
+  return {
+    data: { value: [] },
+    error: { value: null },
+  }
+})
+
+config.global.stubs = {
+  ...config.global.stubs,
+  VDataTable: { template: '<table><slot /></table>' },
+  VDialog: { template: '<div><slot /></div>' },
+  VIcon: { template: '<i></i>' },
+  VTextField: { template: '<input />' },
+  VSelect: { template: '<select><slot /></select>' },
+  VWindow: { template: '<div><slot /></div>' },
+  VWindowItem: { template: '<div><slot /></div>' },
+  VTable: { template: '<table><slot /></table>' },
+  VAlert: { template: '<div><slot /></div>' },
+  AppStepper: { template: '<div><slot /></div>' },
+  VCardTitle: { template: '<div><slot /></div>' },
+  VCardActions: { template: '<div><slot /></div>' },
+}
