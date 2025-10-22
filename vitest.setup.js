@@ -53,6 +53,8 @@ vi.mock('#app', () => ({
   navigateTo: vi.fn(),
 }))
 
+global.navigateTo = vi.fn() 
+
 config.global.stubs = {
   VImg: { template: '<img />' },
   VBtn: { template: '<button><slot /></button>' },
