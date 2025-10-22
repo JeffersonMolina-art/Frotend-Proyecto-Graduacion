@@ -114,4 +114,11 @@ config.global.stubs = {
   VCardActions: { template: '<div><slot /></div>' },
   VAutocomplete: { template: '<input />' },
   VSnackbar: { template: '<div><slot /></div>' },
+  VDivider: { template: '<hr />' },
+  VAvatar: { template: '<div><slot /></div>' },
+  VChip: { template: '<div><slot /></div>' },
+  VList: { template: '<ul><slot /></ul>' },
+  VListItem: { template: '<li><slot /></li>' },
+  VListItemTitle: { template: '<span><slot /></span>' },
+  ProveedorModal: { template: '<div><slot /></div>' },
 }

@@ -48,7 +48,7 @@ import { defineProps, ref, watch } from 'vue'
 
 import ProveedorVista from './ProveedorVista.vue'
 
-
+defineEmits(['editar', 'eliminar'])
 
 
 const proveedorSeleccionado = ref(null)

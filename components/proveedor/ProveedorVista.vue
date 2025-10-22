@@ -4,7 +4,7 @@ import { ref } from 'vue'
 const props = defineProps({
   proveedor: {
     type: Object,
-    required: true,
+    default: null
   },
 })
 
